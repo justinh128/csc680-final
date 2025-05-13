@@ -8,13 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		D08E49832DD3056E005A2B36 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = D08E49822DD3056E005A2B36 /* FirebaseStorage */; };
-		D08E499A2DD33DE7005A2B36 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D08E49992DD33DE7005A2B36 /* README.md */; };
 		D0A894CE2D6AA30200519B36 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D0A894CD2D6AA30200519B36 /* FirebaseAuth */; };
 		D0A894D02D6AA30200519B36 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = D0A894CF2D6AA30200519B36 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		D08E49992DD33DE7005A2B36 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D0A894A22D6A97A400519B36 /* TimeCapsule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimeCapsule.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -44,7 +42,6 @@
 			isa = PBXGroup;
 			children = (
 				D0A894A42D6A97A400519B36 /* TimeCapsule */,
-				D08E49992DD33DE7005A2B36 /* README.md */,
 				D0A894A32D6A97A400519B36 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -127,7 +124,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D08E499A2DD33DE7005A2B36 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

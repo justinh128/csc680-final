@@ -9,15 +9,20 @@ class FriendsViewModel: ObservableObject {
     @Published var incomingRequestUsers: [AppUser] = []
 
     let db = Firestore.firestore()
-    private var uid: String { Auth.auth().currentUser!.uid }
 
-    init() {
-        fetchFriends()
-        fetchRequests()
+    // Call this after login is confirmed
+    func fetchAll() {
+        guard let currentUid = Auth.auth().currentUser?.uid else {
+            print("No user is logged in.")
+            return
+        }
+
+        fetchFriends(for: currentUid)
+        fetchRequests(for: currentUid)
     }
-
+    
     // Get the current user's accepted friends
-    func fetchFriends() {
+    func fetchFriends(for uid: String) {
         db.collection("users")
           .document(uid)
           .collection("friends")
@@ -34,7 +39,7 @@ class FriendsViewModel: ObservableObject {
     }
 
     // Get all incoming friend requests
-    func fetchRequests() {
+    func fetchRequests(for uid: String) {
         db.collection("users")
           .document(uid)
           .collection("friendRequests")
@@ -86,7 +91,10 @@ class FriendsViewModel: ObservableObject {
 
     // Send a friend request to another user by UID
     func sendRequest(to friendUid: String) {
-        let myUid = uid
+        guard let myUid = Auth.auth().currentUser?.uid else {
+            print("Cannot send request — not logged in.")
+            return
+        }
         db.collection("users")
           .document(friendUid)
           .collection("friendRequests")
@@ -96,10 +104,14 @@ class FriendsViewModel: ObservableObject {
 
     // Accept or decline a friend request
     func respond(to request: FriendRequest, accept: Bool) {
+        guard let myUid = Auth.auth().currentUser?.uid else {
+            print("Cannot respond to request — not logged in.")
+            return
+        }
         let otherUid = request.id
         let status = accept ? "accepted" : "declined"
         let myReqRef = db.collection("users")
-                         .document(uid)
+                         .document(myUid)
                          .collection("friendRequests")
                          .document(otherUid)
 
@@ -111,12 +123,12 @@ class FriendsViewModel: ObservableObject {
 
             if accept {
                 // Add each other to the friends list
-                let meRef   = self.db.collection("users").document(self.uid)
+                let meRef   = self.db.collection("users").document(myUid)
                                       .collection("friends")
                                       .document(otherUid)
                 let themRef = self.db.collection("users").document(otherUid)
                                       .collection("friends")
-                                      .document(self.uid)
+                                      .document(myUid)
 
                 let since = Timestamp(date: Date())
                 meRef.setData(["since": since])
@@ -125,22 +137,26 @@ class FriendsViewModel: ObservableObject {
 
             // Refresh both lists
             DispatchQueue.main.async {
-                self.fetchRequests()
-                self.fetchFriends()
+                self.fetchAll()
             }
         }
     }
     
     // Remove a friend from both users’ lists
     func removeFriend(_ friendUid: String) {
+        guard let myUid = Auth.auth().currentUser?.uid else {
+            print("Cannot remove friend — not logged in.")
+            return
+        }
+        
         let meRef   = db.collection("users")
-                         .document(uid)
+                         .document(myUid)
                          .collection("friends")
                          .document(friendUid)
         let themRef = db.collection("users")
                          .document(friendUid)
                          .collection("friends")
-                         .document(uid)
+                         .document(myUid)
 
         // Delete both sides
         meRef.delete { error in
@@ -155,7 +171,7 @@ class FriendsViewModel: ObservableObject {
                 }
                 // Refresh UI
                 DispatchQueue.main.async {
-                    self.fetchFriends()
+                    self.fetchFriends(for: myUid)
                 }
             }
         }

@@ -71,5 +71,8 @@ struct FriendsView: View {
                 AddFriendView(vm: vm)
             }
         }
+        .onAppear {
+            vm.fetchAll()
+        }
     }
 }
