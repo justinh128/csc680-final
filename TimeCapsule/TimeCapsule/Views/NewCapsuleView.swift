@@ -103,6 +103,9 @@ struct NewCapsuleView: View {
                     }
                 }
             }
+            .onAppear {
+                friendsVM.fetchAll()
+            }
             .navigationTitle("New Capsule")
         }
     }
